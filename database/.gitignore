@@ -1,0 +1,12 @@
+/node_modules
+/vendor
+.env
+.env.backup
+.env.production
+homepage.sqlite
+database/database.sqlite
+database/database.sqlite-journal
+/public/build
+/public/storage
+.phpunit.result.cache
+.vite
