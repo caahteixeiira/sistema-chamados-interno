@@ -203,7 +203,6 @@ VITE_APP_NAME="${APP_NAME}"
 
 ### 5. **Execute as migrações e popular dados (Seeders)**
 ```bash
-php artisan migrate
 php artisan migrate --seed
 ```
 Dica: Ao rodar o comando pela primeira vez, o Laravel 11 identificará que o arquivo database.sqlite não existe e perguntará se deseja criá-lo. Digite yes (ou sim) no terminal.
@@ -222,44 +221,20 @@ Isso criará 3 responsáveis de exemplo:
 
 ## ⚙️ Configuração
 
-### Criando novos responsáveis
+## 👥 Adicionando Novos Responsáveis para Teste
 
-Se precisar adicionar mais responsáveis, edite [database/seeders/ResponsibleSeeder.php](database/seeders/ResponsibleSeeder.php):
+Como o sistema distribui os chamados automaticamente, você pode adicionar novos técnicos para ver o balanceamento acontecer.
 
-```php
-Responsible::create([
-    'name' => 'Novo Responsável',
-    'email' => 'novo@empresa.com',
-]);
-```
+O jeito mais rápido de cadastrar um novo responsável sem resetar o banco de dados é usando o **Laravel Tinker** no terminal:
 
-Depois execute:
 ```bash
-php artisan db:seed --class=ResponsibleSeeder
-```
+php artisan tinker
 
 ### Alterando valores padrão de Status e Prioridade
 
 Edite os enums em `app/Enums/`:
 - [TicketStatus.php](app/Enums/TicketStatus.php)
 - [TicketPriority.php](app/Enums/TicketPriority.php)
-
-🔑 Credenciais de Acesso (Importante)
-O comando de seeders cria automaticamente uma conta de usuário de testes e os 3 técnicos responsáveis exigidos pelo desafio:
-
-E-mail de Login: test@example.com
-
-Senha padrão: password
-
-Técnicos Criados no Banco:
-
-Ana Suporte (ana@empresa.com)
-
-Bruno TI (bruno@empresa.com)
-
-Carla Administrativo (carla@empresa.com)
-
----
 
 ## ▶️ Execução
 
@@ -274,12 +249,6 @@ A aplicação estará disponível em `http://localhost:8000`
 **Terminal 2 - Frontend com Hot Reload:**
 ```bash
 npm run dev
-```
-### Executando Testes Automatizados 🧪
-**Caso queira validar os fluxos e as regras de negócio das Actions e Controllers, execute:**
-
-```bash
-php artisan test
 ```
 
 ### Em produção
@@ -446,23 +415,7 @@ routes/
 
 config/                        # Configurações Laravel
 ```
-
 ---
-
-## 🚀 Próximos Passos Possíveis
-
-- [ ] Adicionar testes automatizados (PHPUnit + Vitest)
-- [ ] Sistema de notificações em tempo real (Laravel Reverb / WebSockets).
-- [ ] Implementar soft deletes para chamados
-- [ ] Adicionar comentários/notas em chamados
-- [ ] Histórico de mudanças (activity log)
-- [ ] Notificações por email
-- [ ] Relatórios de produtividade
-- [ ] Dark mode na UI
-- [ ] Exportar chamados para PDF/Excel
-
----
-
 ## 📞 Suporte
 
 Para dúvidas ou problemas:
