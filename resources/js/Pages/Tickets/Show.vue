@@ -1,11 +1,11 @@
 <script setup>
 import { Link } from '@inertiajs/vue3'
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
+import AppLayout from '@/Layouts/AppLayout.vue'
 import TicketStatusBadge from '@/Components/Tickets/TicketStatusBadge.vue'
 import TicketPriorityBadge from '@/Components/Tickets/TicketPriorityBadge.vue'
 
 defineOptions({
-  layout: AuthenticatedLayout,
+  layout: AppLayout,
 })
 
 defineProps({
