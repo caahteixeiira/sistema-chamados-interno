@@ -12,27 +12,27 @@ class ResponsibleSeeder extends Seeder
         Responsible::updateOrCreate(
             ['name' => 'Ana Suporte'],
             ['email' => 'ana@empresa.com']
-            
+
         );
 
         Responsible::updateOrCreate(
             ['name' => 'Bruno TI'],
             ['email' => 'bruno@empresa.com']
-            
+
         );
 
         Responsible::updateOrCreate(
-            ['name' => 'Carla Administrativo'],   
+            ['name' => 'Carla Administrativo'],
             ['email' => 'carla@empresa.com']
-            
+
         );
 
-    /* //Descomente para criar um responsável aleatório usando a factory
+    //Descomente para criar um responsável aleatório usando a factory
         Responsible::updateOrCreate(
-            ['name' => 'Novo Responsável'],
-            ['email' => 'novo@empresa.com']
-            
+            ['name' => 'usuario aleatorio'],
+            ['email' => 'usuario@empresa.com']
+
         );
-        */
+
     }
 }

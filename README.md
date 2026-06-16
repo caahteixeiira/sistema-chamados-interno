@@ -54,21 +54,23 @@ Um sistema web moderno para gestão de chamados/tickets internos da empresa, con
 
 Conforme solicitado nos requisitos do desafio, abaixo estão listadas as principais dependências externas adicionadas ao projeto além da estrutura base do ecossistema Laravel/Vue:
 
-| Biblioteca / Pacote | Escopo | Finalidade Principal |
-| :--- | :--- | :--- |
-| `@inertiajs/vue3` | Frontend / Backend | Protocolo de comunicação para criar a arquitetura SPA monolítica sem a necessidade de rotas de API REST tradicionais. |
-| `lucide-vue-next` | Frontend (Vue 3) | Conjunto de ícones vetoriais modernos e leves utilizados para enriquecer a identidade visual dos status e prioridades na listagem de chamados. |
-| `tightenco/ziggy` | Blade / JavaScript | Permite utilizar as rotas nomeadas do Laravel diretamente dentro dos arquivos Vue através do helper `route()`. |
+| Biblioteca / Pacote | Escopo             | Finalidade Principal                                                                                                                           |
+| :------------------ | :----------------- | :--------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@inertiajs/vue3`   | Frontend / Backend | Protocolo de comunicação para criar a arquitetura SPA monolítica sem a necessidade de rotas de API REST tradicionais.                          |
+| `lucide-vue-next`   | Frontend (Vue 3)   | Conjunto de ícones vetoriais modernos e leves utilizados para enriquecer a identidade visual dos status e prioridades na listagem de chamados. |
+| `tightenco/ziggy`   | Blade / JavaScript | Permite utilizar as rotas nomeadas do Laravel diretamente dentro dos arquivos Vue através do helper `route()`.                                 |
 
 ### Decisões Arquiteturais
 
 #### 1. **Actions Pattern (Domain-Driven Design)**
+
 ```
 app/Actions/Tickets/
 ├── CreateTicketAction.php
 ├── UpdateTicketAction.php
 └── AssignTicketAutomaticallyAction.php
 ```
+
 - **Benefício**: Lógica de negócio isolada e testável
 - **Reutilização**: Ações podem ser chamadas de múltiplos contextos
 - **Manutenibilidade**: Código mais organizado e fácil de entender
@@ -76,9 +78,11 @@ app/Actions/Tickets/
 - **Desacoplamento**: Lógicas cruciais como o cálculo da distribuição automática e persistência ficam isoladas de requisições web, permitindo que sejam facilmente testadas ou reutilizadas no futuro por comandos CLI ou jobs.
 
 #### 2. **Enums para Valores Fixos**
+
 - **Type-Safety**: O uso de PHP Backed Enums (`TicketStatus` e `TicketPriority`) impede o armazenamento de valores corrompidos ou inválidos no banco de dados. Os Enums centralizam métodos de conveniência como `label()` para a interface visual.
 
 #### 3. **Distribuição Automática Inteligente**
+
 - **Otimização de Query**: O algoritmo de balanço de carga computa os chamados utilizando `withCount()` diretamente via banco de dados (SQLite), filtrando estritamente as tarefas sob carga operacional ativa (`OPEN` e `IN_PROGRESS`). Isso delega a carga computacional de agregação para o motor de banco de dados, evitando carregar coleções inteiras em memória no PHP.
 
 ---
@@ -117,29 +121,36 @@ O projeto possui testes automatizados cobrindo as regras principais do domínio 
 ## 📦 Instalação
 
 ### 1. Clonar o repositório
+
 ```bash
 git clone <seu-repositorio>
 cd SistemaDeChamadosInterno
 ```
 
 ### 2. **Instale as dependências PHP**
+
 ```bash
 composer install
 ```
 
 ### 3. **Instale as dependências JavaScript**
+
 ```bash
 npm install
 ```
 
 ### 4. **Configure o arquivo `.env`**
+
 ```bash
-cp .env.example .env
+// cp .env.example .env (comando para Linux ou Mac)
+copy .env.example .env
 php artisan key:generate
 ```
+
 Nota: O projeto está pré-configurado para utilizar SQLite. Não há necessidade de configurar servidores ou senhas extras de banco de dados locais.
 
 **Configurações importantes do `.env`:**
+
 ```env
 APP_NAME="Sistema de Chamados Interno"
 APP_ENV=local
@@ -202,17 +213,21 @@ VITE_APP_NAME="${APP_NAME}"
 ```
 
 ### 5. **Execute as migrações e popular dados (Seeders)**
+
 ```bash
 php artisan migrate --seed
 ```
+
 Dica: Ao rodar o comando pela primeira vez, o Laravel 11 identificará que o arquivo database.sqlite não existe e perguntará se deseja criá-lo. Digite yes (ou sim) no terminal.
 
 ### 6. **Popule o banco com dados iniciais**
+
 ```bash
 php artisan db:seed
 ```
 
 Isso criará 3 responsáveis de exemplo:
+
 - Ana Suporte (ana@empresa.com)
 - Bruno TI (bruno@empresa.com)
 - Carla Administrativo (carla@empresa.com)
@@ -225,12 +240,27 @@ Isso criará 3 responsáveis de exemplo:
 
 Como o sistema distribui os chamados automaticamente, você pode adicionar novos técnicos para ver o balanceamento acontecer.
 
-O jeito mais rápido de cadastrar um novo responsável sem resetar o banco de dados é usando o **Laravel Tinker** no terminal:
+**Para adicionar mais técnicos, acesse o caminho:**
 
-```bash
-php artisan tinker
+1. 📂 **Acesse o arquivo no seguinte caminho:**
+   `database` > `seeders` > `ResponsibleSeeder.php`
 
-### Alterando valores padrão de Status e Prioridade
+2. 🔓 **Descomente o trecho do código PHP:**
+    ```php
+    Responsible::updateOrCreate(
+        ['name' => 'Novo Responsável'],
+        ['email' => 'novo@empresa.com']
+    );`
+    E coloque o nome e e-mail que desejar
+    ```
+3. ✏️ Personalize os dados: Altere o 'Novo Responsável' e o 'novo@empresa.com' para o nome e o e-mail do técnico que você desejar cadastrar.
+
+E rode o comando
+
+````bash
+php artisan db:seed --class=ResponsibleSeeder
+
+### Alterando valores padrão de Status e Prioridade caso queira
 
 Edite os enums em `app/Enums/`:
 - [TicketStatus.php](app/Enums/TicketStatus.php)
@@ -243,10 +273,12 @@ Edite os enums em `app/Enums/`:
 **Terminal 1 - Backend Laravel:**
 ```bash
 php artisan serve
-```
+````
+
 A aplicação estará disponível em `http://localhost:8000`
 
 **Terminal 2 - Frontend com Hot Reload:**
+
 ```bash
 npm run dev
 ```
@@ -254,11 +286,13 @@ npm run dev
 ### Em produção
 
 **Build dos assets:**
+
 ```bash
 npm run build
 ```
 
 **Start do servidor:**
+
 ```bash
 php artisan serve --host=0.0.0.0 --port=8000
 ```
@@ -276,19 +310,20 @@ php artisan serve --host=0.0.0.0 --port=8000
 ### Criando um chamado
 
 1. Preencha os campos obrigatórios:
-   - **Título**: Breve descrição do problema
-   - **Descrição**: Detalhes completos
-   - **Prioridade**: Baixa, Média ou Alta
+    - **Título**: Breve descrição do problema
+    - **Descrição**: Detalhes completos
+    - **Prioridade**: Baixa, Média ou Alta
 
 2. Escolha o responsável:
-   - **Manual**: Selecione um responsável na lista
-   - **Automático**: Marque "Atribuir automaticamente" (será atribuído ao com menos chamados em aberto)
+    - **Manual**: Selecione um responsável na lista
+    - **Automático**: Marque "Atribuir automaticamente" (será atribuído ao com menos chamados em aberto)
 
 3. Clique em **"Criar Chamado"**
 
 ### Listando chamados
 
 Na página principal, você pode:
+
 - **Buscar**: Por título do chamado
 - **Filtrar por Status**: Aberto, Em andamento, Resolvido, Fechado
 - **Filtrar por Prioridade**: Baixa, Média, Alta
@@ -299,6 +334,7 @@ Os chamados são ordenados por data de abertura (mais recentes primeiro).
 ### Visualizando um chamado
 
 Clique em **"Ver"** na tabela para ver todos os detalhes:
+
 - Título, Descrição
 - Status e Prioridade
 - Responsável atribuído
@@ -317,37 +353,42 @@ Clique em **"Ver"** na tabela para ver todos os detalhes:
 ## 🔧 Funcionalidades Implementadas
 
 ### ✅ 1. Documentação (1.0)
+
 - [x] README com instruções de instalação e execução
 - [x] Justificativas de escolhas tecnológicas e arquiteturais
 
 ### ✅ 2. Cadastro de Chamados (2.0)
+
 - [x] Cadastro de chamados (2.1)
 - [x] Edição de chamados (2.1)
 - [x] Listagem de chamados (2.1)
 - [x] Visualização de chamados (2.1)
 - [x] Campos obrigatórios (2.2):
-  - [x] Título
-  - [x] Descrição
-  - [x] Prioridade (Baixa, Média, Alta)
-  - [x] Status (Aberto, Em andamento, Resolvido, Fechado)
-  - [x] Responsável pelo atendimento
-  - [x] Data e hora de abertura
+    - [x] Título
+    - [x] Descrição
+    - [x] Prioridade (Baixa, Média, Alta)
+    - [x] Status (Aberto, Em andamento, Resolvido, Fechado)
+    - [x] Responsável pelo atendimento
+    - [x] Data e hora de abertura
 - [x] Campos adicionais (2.3):
-  - [x] Timestamps (created_at, updated_at)
+    - [x] Timestamps (created_at, updated_at)
 
 ### ✅ 3. Responsáveis pelo Atendimento (3.0)
+
 - [x] Manutenção de conjunto de responsáveis (3.1)
 - [x] 3+ responsáveis disponíveis (3.4) - Ana, Bruno, Carla
 - [x] Seleção de responsáveis ao criar/editar (3.3)
 - [x] Sem interface de CRUD para responsáveis (3.2) - como solicitado
 
 ### ✅ 4. Distribuição Automática (4.0)
+
 - [x] Opção de atribuição automática (4.1)
 - [x] Atribui ao responsável com menos chamados em aberto (4.1)
 - [x] Seleção manual também disponível (4.2)
 - [x] "Em aberto" = OPEN ou IN_PROGRESS (4.3)
 
 ### ✅ 5. Listagem e Acompanhamento (5.0)
+
 - [x] Tela de listagem de chamados (5.1)
 - [x] Filtros por status (5.2)
 - [x] Filtros por prioridade (5.2)
@@ -357,6 +398,7 @@ Clique em **"Ver"** na tabela para ver todos os detalhes:
 - [x] Paginação (10 por página) (5.2)
 
 ### ✅ 6. Funcionamento da Aplicação (6.0)
+
 - [x] Executável localmente (6.1)
 - [x] Documentação de setup (6.2)
 - [x] Dependências documentadas (6.2)
@@ -415,7 +457,9 @@ routes/
 
 config/                        # Configurações Laravel
 ```
+
 ---
+
 ## 📞 Suporte
 
 Para dúvidas ou problemas:
@@ -426,5 +470,3 @@ Para dúvidas ou problemas:
 4. Verifique os logs em `storage/logs/`
 
 ---
-
-
