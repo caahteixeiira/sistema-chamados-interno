@@ -17,7 +17,7 @@ class UpdateTicketRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'string', 'max:150'],
+            'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'priority' => ['required', Rule::enum(TicketPriority::class)],
             'status' => ['required', Rule::enum(TicketStatus::class)],
