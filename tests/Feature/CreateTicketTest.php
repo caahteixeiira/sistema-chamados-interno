@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Enums\TicketPriority;
 use App\Enums\TicketStatus;
 use App\Models\Responsible;
-use App\Models\Ticket;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
